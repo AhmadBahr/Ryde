@@ -50,9 +50,8 @@ const Onboarding = () => {
                     } else {
                         swiperRef.current?.scrollBy(1);
                     }
-                }}
-                style={styles.nextButton}
-            />
+                } }
+                style={styles.nextButton} IconLeft={undefined} IconRight={undefined}/>
         </SafeAreaView>
     );
 };
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
     activeDot: {
         width: 32,
         height: 4,
-        backgroundColor: 'black',
+        backgroundColor: 'blue',
         marginHorizontal: 4,
         borderRadius: 2,
     },

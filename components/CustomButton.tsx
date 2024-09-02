@@ -11,7 +11,7 @@ const CustomButton = ({
 }) => (
     <TouchableOpacity
         onPress={onPress}
-        style={[styles.button, style]} // Apply custom styles here
+        style={[styles.button, style]}
         {...props}
     >
         {IconLeft && <IconLeft />}
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'blue', // Blue background
+        backgroundColor: 'blue', 
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     text: {
-        color: 'white', // White text
+        color: 'white', 
         fontSize: 16,
     },
 });
