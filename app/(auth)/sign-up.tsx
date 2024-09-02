@@ -4,6 +4,7 @@ import InputField from "@/components/InputField";
 import { images, icons } from "@/constants";
 import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
 import { Link } from "expo-router";
+import OAuth from "@/components/OAuth";
 
 const SignUp = () => {
     const [form, setForm] = useState({
@@ -54,7 +55,7 @@ const SignUp = () => {
                         onPress={onSignUpPress}
                         style={styles.signUpButton} IconLeft={undefined} IconRight={undefined}
                     />
-
+                    <OAuth/>
 
                     <Link href="/sign-in" style={styles.link}>
                         <Text style={styles.text}>Already have an account? </Text>
