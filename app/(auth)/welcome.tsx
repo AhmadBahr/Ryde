@@ -3,15 +3,16 @@ import React, { useState, useRef } from 'react';
 import { Text, TouchableOpacity, StyleSheet, View, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Swiper from 'react-native-swiper';
-import { onboarding } from '@/constants'; 
+import { onboarding } from '@/constants';
+import CustomButton from '@/components/CustomButton';
 
 const Onboarding = () => {
     const swiperRef = useRef<Swiper>(null);
     const [activeIndex, setActiveIndex] = useState(0);
+    const isLastSlide = activeIndex === onboarding.length - 1;
 
     return (
         <SafeAreaView style={styles.container}>
-            
             <TouchableOpacity
                 onPress={() => router.replace('/(auth)/sign-up')}
                 style={styles.skipButton}
@@ -23,7 +24,7 @@ const Onboarding = () => {
                 loop={false}
                 dot={<View style={styles.dot} />}
                 activeDot={<View style={styles.activeDot} />}
-                onIndexChanged={(index) => setActiveIndex(index)} 
+                onIndexChanged={(index) => setActiveIndex(index)}
                 style={styles.swiper}
             >
                 {onboarding.map((item, index) => (
@@ -40,6 +41,18 @@ const Onboarding = () => {
                     </View>
                 ))}
             </Swiper>
+
+            <CustomButton
+                title={isLastSlide ? 'Get Started' : 'Next'}
+                onPress={() => {
+                    if (isLastSlide) {
+                        router.replace('/(auth)/sign-up');
+                    } else {
+                        swiperRef.current?.scrollBy(1);
+                    }
+                }}
+                style={styles.nextButton}
+            />
         </SafeAreaView>
     );
 };
@@ -110,6 +123,21 @@ const styles = StyleSheet.create({
     image: {
         width: '100%',
         height: 300,
+    },
+    nextButton: {
+        position: 'absolute',
+        bottom: -15,
+        alignSelf: 'center',
+        width: '90%',
+        backgroundColor: '#007AFF',
+        borderRadius: 30, 
+        paddingVertical: 14,
+        paddingHorizontal: 24, 
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2, 
+        shadowRadius: 4,
     },
 });
 
