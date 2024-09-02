@@ -1,26 +1,27 @@
 import React from "react";
-import { 
-    Image, 
-    KeyboardAvoidingView, 
-    TouchableWithoutFeedback, 
-    View, 
-    Text, 
-    StyleSheet, 
-    TextInput, 
-    Platform, 
-    Keyboard 
+import {
+    Image,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback,
+    View,
+    Text,
+    StyleSheet,
+    TextInput,
+    Platform,
+    Keyboard
 } from "react-native";
+import { InputFieldProps } from "@/types/type";
 
-const InputField = ({ 
-    label, 
-    labelStyle, 
-    icon, 
-    secureTextEntry = false, 
-    containerStyle, 
-    inputStyle, 
-    iconStyle, 
-    ...props 
-}) => (
+const InputField = ({
+    label,
+    labelStyle,
+    icon,
+    secureTextEntry = false,
+    containerStyle,
+    inputStyle,
+    iconStyle,
+    ...props
+}: InputFieldProps) => (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.inputContainer}>
