@@ -35,8 +35,9 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     text: {
-        color: 'white', 
+        color: 'black', 
         fontSize: 16,
+        fontWeight: 'bold',
     },
 });
 

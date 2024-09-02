@@ -23,9 +23,7 @@ const SignUp = () => {
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
                     <Image source={images.signUpCar} style={styles.image} />
-                    <Text style={styles.title}>
-                        Create your Account
-                    </Text>
+                    <Text style={styles.title}>Create your Account</Text>
                 </View>
                 <View style={styles.inputContainer}>
                     <InputField
@@ -53,15 +51,16 @@ const SignUp = () => {
                     <CustomButton
                         title="Sign Up"
                         onPress={onSignUpPress}
-                        style={styles.signUpButton} IconLeft={undefined} IconRight={undefined}
+                        style={styles.signUpButton}
+                        IconLeft={undefined}
+                        IconRight={undefined}
                     />
-                    <OAuth/>
-
-                    <Link href="/sign-in" style={styles.link}>
-                        <Text style={styles.text}>Already have an account? </Text>
-                        <Text style={styles.highlightedText}>Log In</Text>
-                    </Link>
                 </View>
+                <OAuth />
+                <Link href="/sign-in" style={styles.link}>
+                    <Text style={styles.text}>Already have an account? </Text>
+                    <Text style={styles.highlightedText}>Log In</Text>
+                </Link>
             </View>
         </ScrollView>
     );
@@ -75,11 +74,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
+        paddingHorizontal: 20,
     },
     imageContainer: {
         position: 'relative',
         width: '100%',
         height: 250,
+        marginBottom: 20,
     },
     image: {
         width: '100%',
@@ -95,13 +96,10 @@ const styles = StyleSheet.create({
         left: 5,
     },
     inputContainer: {
-        padding: 20,
+        marginBottom: 20,
     },
     signUpButton: {
-        position: 'absolute',
-        bottom: -35,
-        alignSelf: 'center',
-        width: '90%',
+        width: '100%',
         backgroundColor: '#007AFF',
         borderRadius: 30,
         paddingVertical: 14,
@@ -111,6 +109,8 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 4,
+        marginBottom: 20,
+        marginTop: 20
     },
     link: {
         marginTop: 10,
@@ -118,11 +118,11 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 16,
-        color: '#B0B0B0', 
+        color: '#B0B0B0',
     },
     highlightedText: {
         fontSize: 16,
-        color: '#007AFF', 
+        color: '#007AFF',
         fontWeight: 'bold',
     },
 });
