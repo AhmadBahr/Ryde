@@ -6,6 +6,7 @@ import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
 import { Link } from "expo-router";
 import OAuth from "@/components/OAuth";
 import { useSignUp } from "@clerk/clerk-expo";
+import ReactNativeModal from "react-native-modal";
 
 const SignUp = () => {
     const { isLoaded, signUp, setActive } = useSignUp()
@@ -17,7 +18,7 @@ const SignUp = () => {
     });
 
     const [verification, setVerification] = useState({
-        state: 'default',
+        state: '',
         error: '',
         code: ''
     });
@@ -105,6 +106,14 @@ const SignUp = () => {
                     <Text style={styles.highlightedText}>Log In</Text>
                 </Link>
             </View>
+            <ReactNativeModal isVisible={verification.state==='success'}>
+                <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
+                    <Image source={images.check} className="w-[110px] h-[110px] mx-auto my-5">
+
+                    </Image>
+                </View>
+
+            </ReactNativeModal>
         </ScrollView>
     );
 };
