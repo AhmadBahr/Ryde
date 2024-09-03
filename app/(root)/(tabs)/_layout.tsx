@@ -1,9 +1,10 @@
 import { icons } from "@/constants";
 import { Tabs } from "expo-router";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, ImageSourcePropType } from "react-native";
 
-const TabIcon = ({ focused, source }) => (
+const TabIcon = ({ focused, source }: { source: ImageSourcePropType; focused: boolean }) => (
     <View style={[styles.tabIconContainer, focused && styles.tabIconContainerFocused]}>
+        <View style={[styles.innerIconContainer, focused && styles.innerIconContainerFocused]} />
         <Image source={source} style={styles.tabIconImage} />
     </View>
 );
@@ -54,17 +55,27 @@ const Layout = () => {
 
 const styles = StyleSheet.create({
     tabIconContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 9999,
+        flexDirection: 'row',     
+        justifyContent: 'center',  
+        alignItems: 'center',     
+        borderRadius: 9999,       
     },
     tabIconContainerFocused: {
-        backgroundColor: '#E5E7EB',
+        backgroundColor: '#E5E7EB', 
+    },
+    innerIconContainer: {
+        borderRadius: 9999,       
+        width: 48,                
+        height: 48,               
+        justifyContent: 'center', 
+        alignItems: 'center',     
+    },
+    innerIconContainerFocused: {
+        backgroundColor: '#D1D5DB', 
     },
     tabIconImage: {
-        width: 24,
-        height: 24,
+        width: 24,                 
+        height: 24,                
     },
 });
 
