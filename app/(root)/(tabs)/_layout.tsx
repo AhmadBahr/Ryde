@@ -4,8 +4,12 @@ import { View, Image, StyleSheet, ImageSourcePropType } from "react-native";
 
 const TabIcon = ({ focused, source }: { source: ImageSourcePropType; focused: boolean }) => (
     <View style={[styles.tabIconContainer, focused && styles.tabIconContainerFocused]}>
-        <View style={[styles.innerIconContainer, focused && styles.innerIconContainerFocused]} />
-        <Image source={source} style={styles.tabIconImage} />
+        <View style={[styles.innerIconContainer, focused && styles.innerIconContainerFocused]}>
+            <Image 
+                source={source} 
+                style={[styles.tabIconImage, focused && styles.tabIconImageFocused]} 
+            />
+        </View>
     </View>
 );
 
@@ -20,7 +24,7 @@ const Layout = () => {
             <Tabs.Screen
                 name="home"
                 options={{
-                    title: 'Home',
+                    title: '',
                     headerShown: false,
                     tabBarIcon: ({ focused }) => <TabIcon focused={focused} source={icons.home} />
                 }}
@@ -28,7 +32,7 @@ const Layout = () => {
             <Tabs.Screen
                 name="rides"
                 options={{
-                    title: 'Rides',
+                    title: '',
                     headerShown: false,
                     tabBarIcon: ({ focused }) => <TabIcon focused={focused} source={icons.list} />
                 }}
@@ -36,7 +40,7 @@ const Layout = () => {
             <Tabs.Screen
                 name="chat"
                 options={{
-                    title: 'Chat',
+                    title: '',
                     headerShown: false,
                     tabBarIcon: ({ focused }) => <TabIcon focused={focused} source={icons.chat} />
                 }}
@@ -44,7 +48,7 @@ const Layout = () => {
             <Tabs.Screen
                 name="profile"
                 options={{
-                    title: 'Profile',
+                    title: '',
                     headerShown: false,
                     tabBarIcon: ({ focused }) => <TabIcon focused={focused} source={icons.profile} />
                 }}
@@ -55,28 +59,34 @@ const Layout = () => {
 
 const styles = StyleSheet.create({
     tabIconContainer: {
-        flexDirection: 'row',     
-        justifyContent: 'center',  
-        alignItems: 'center',     
-        borderRadius: 9999,       
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 9999,
     },
     tabIconContainerFocused: {
-        backgroundColor: '#E5E7EB', 
+        backgroundColor: 'green',
     },
     innerIconContainer: {
-        borderRadius: 9999,       
-        width: 48,                
-        height: 48,               
-        justifyContent: 'center', 
-        alignItems: 'center',     
+        borderRadius: 9999,
+        width: 48,
+        height: 48,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'transparent', 
     },
     innerIconContainerFocused: {
-        backgroundColor: '#D1D5DB', 
+        backgroundColor: 'blue', 
     },
     tabIconImage: {
-        width: 24,                 
-        height: 24,                
+        width: 24,
+        height: 24,
+        resizeMode: 'contain',
+        tintColor: 'gray', 
     },
+    tabIconImageFocused: {
+        tintColor: 'white',
+    }
 });
 
 export default Layout;
