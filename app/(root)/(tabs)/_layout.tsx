@@ -5,9 +5,9 @@ import { View, Image, StyleSheet, ImageSourcePropType } from "react-native";
 const TabIcon = ({ focused, source }: { source: ImageSourcePropType; focused: boolean }) => (
     <View style={[styles.tabIconContainer, focused && styles.tabIconContainerFocused]}>
         <View style={[styles.innerIconContainer, focused && styles.innerIconContainerFocused]}>
-            <Image 
-                source={source} 
-                style={[styles.tabIconImage, focused && styles.tabIconImageFocused]} 
+            <Image
+                source={source}
+                style={[styles.tabIconImage, focused && styles.tabIconImageFocused]}
             />
         </View>
     </View>
@@ -19,6 +19,21 @@ const Layout = () => {
             initialRouteName="index"
             screenOptions={{
                 tabBarActiveTintColor: "white",
+                tabBarInactiveTintColor: "white",
+                tabBarShowLabel: false,
+                tabBarStyle: {
+                    backgroundColor: '#333333',
+                    borderRadius: 50,
+                    overflow: "hidden",
+                    marginHorizontal: 20,
+                    marginBottom: 20,
+                    height: 78,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    position: 'absolute', 
+                }
             }}
         >
             <Tabs.Screen
@@ -73,16 +88,16 @@ const styles = StyleSheet.create({
         height: 48,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'transparent', 
+        backgroundColor: 'transparent',
     },
     innerIconContainerFocused: {
-        backgroundColor: 'blue', 
+        backgroundColor: 'blue',
     },
     tabIconImage: {
         width: 24,
         height: 24,
         resizeMode: 'contain',
-        tintColor: 'gray', 
+        tintColor: 'gray',
     },
     tabIconImageFocused: {
         tintColor: 'white',
