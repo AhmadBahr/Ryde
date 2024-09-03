@@ -18,7 +18,7 @@ const SignUp = () => {
     });
 
     const [verification, setVerification] = useState({
-        state: 'default',
+        state: 'success',
         error: '',
         code: ''
     });
@@ -105,9 +105,7 @@ const SignUp = () => {
                     <Text style={styles.highlightedText}>Log In</Text>
                 </Link>
             </View>
-            <ReactNativeModal isVisible={verification.state === 'pending'}
-                onModalHide={() => setVerification({ ...verification, state: 'pending' })}
-            >
+            <ReactNativeModal isVisible={verification.state === 'pending'}>
                 <View style={styles.pendingModalContainer}>
                     <Text style={styles.pendingModalTitle}>
                         Verification
@@ -143,7 +141,7 @@ const SignUp = () => {
                     <CustomButton
                         title="Browse Home"
                         onPress={() => router.replace("/(root)/(tabs)/home")}
-                        style={styles.modalButton}
+                        style={[styles.modalButton, styles.marginTop]}
                         IconLeft={undefined}
                         IconRight={undefined}
                     />
@@ -248,7 +246,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 4,
         marginBottom: 20,
-        marginTop: 20,
     },
     pendingModalContainer: {
         backgroundColor: 'white',
@@ -285,6 +282,9 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginTop: 20,
         backgroundColor: '#4CAF50', 
+    },
+    marginTop: {
+        marginTop: 20,
     },
 });
 
