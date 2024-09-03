@@ -7,6 +7,7 @@ import { Link, router } from "expo-router";
 import OAuth from "@/components/OAuth";
 import { useSignUp } from "@clerk/clerk-expo";
 import ReactNativeModal from "react-native-modal";
+import { fetchAPI } from "@/lib/fetch";
 
 const SignUp = () => {
     const { isLoaded, signUp, setActive } = useSignUp();
@@ -51,6 +52,14 @@ const SignUp = () => {
             });
 
             if (completeSignUp.status === 'complete') {
+                await fetchAPI('/(api)/user', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: form.name,
+                        email: form.email,
+                        clerkId: completeSignUp.createdUserId,
+                    })
+                })
                 await setActive({ session: completeSignUp.createdSessionId });
                 setVerification({ ...verification, state: 'success' });
             } else {
@@ -124,8 +133,8 @@ const SignUp = () => {
                     {verification.error && (
                         <Text style={styles.errorText}>{verification.error}</Text>
                     )}
-                    <CustomButton 
-                        title="Verify Email" 
+                    <CustomButton
+                        title="Verify Email"
                         onPress={onPressVerify}
                         style={styles.verifyButton}
                         IconLeft={undefined}
@@ -281,7 +290,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         marginBottom: 20,
         marginTop: 20,
-        backgroundColor: '#4CAF50', 
+        backgroundColor: '#4CAF50',
     },
     marginTop: {
         marginTop: 20,
