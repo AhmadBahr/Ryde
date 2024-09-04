@@ -18,7 +18,7 @@ const RideCard = ({
     const formattedDate = rideDate.toLocaleDateString();
     const formattedTime = rideDate.toLocaleTimeString();
 
-    const paymentColor = payment_status === 'paid' ? '#48BB78' : '#F56565'; // green for paid, red for unpaid
+    const paymentColor = payment_status.toLowerCase() === 'paid' ? 'green' : 'red'; // green for paid, red for unpaid
 
     return (
         <View style={styles.cardContainer}>
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     paymentLabel: {
         fontSize: 14,
         fontFamily: 'Jakarta-Medium',
-        color: '#E53E3E',
+        color: '#2D3748',
         fontWeight: 'bold',
     },
     paymentValue: {

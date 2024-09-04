@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import RideCard from '@/components/RideCard';
 import { images } from '@/constants';
 import { useUser } from '@clerk/clerk-expo';
@@ -15,7 +16,7 @@ const recentRides = [
         destination_longitude: "83.985567",
         ride_time: 391,
         fare_price: "19500.00",
-        payment_status: "paid",
+        payment_status: "Paid",
         driver_id: 2,
         user_id: "1",
         created_at: "2024-08-12 05:19:20.620007",
@@ -41,7 +42,7 @@ const recentRides = [
         destination_longitude: "73.856744",
         ride_time: 491,
         fare_price: "24500.00",
-        payment_status: "paid",
+        payment_status: "Paid",
         driver_id: 1,
         user_id: "1",
         created_at: "2024-08-12 06:12:17.683046",
@@ -67,7 +68,7 @@ const recentRides = [
         destination_longitude: "14.442176",
         ride_time: 124,
         fare_price: "6200.00",
-        payment_status: "paid",
+        payment_status: "Paid",
         driver_id: 1,
         user_id: "1",
         created_at: "2024-08-12 08:49:01.809053",
@@ -93,7 +94,7 @@ const recentRides = [
         destination_longitude: "135.502254",
         ride_time: 159,
         fare_price: "7900.00",
-        payment_status: "paid",
+        payment_status: "Paid",
         driver_id: 3,
         user_id: "1",
         created_at: "2024-08-12 18:43:54.297838",
@@ -103,7 +104,7 @@ const recentRides = [
             last_name: "Johnson",
             profile_image_url:
                 "https://ucarecdn.com/0330d85c-232e-4c30-bd04-e5e4d0e3d688/-/preview/826x822/",
-            car_image_url:inidicator 
+            car_image_url:
                 "https://ucarecdn.com/289764fb-55b6-4427-b1d1-f655987b4a14/-/preview/930x932/",
             car_seats: 4,
             rating: "4.70",
@@ -113,12 +114,15 @@ const recentRides = [
 
 export default function Page() {
     const { user } = useUser();
-    const loading = false; 
+    const [loading, setLoading] = useState(false);
+
+    // Mock data usage
+    const rides = recentRides.slice(0, 5);
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <FlatList
-                data={recentRides} // Pass the recentRides data here
+                data={rides}
                 renderItem={({ item }) => <RideCard ride={item} />}
                 keyExtractor={(item) => item.ride_id}
                 contentContainerStyle={styles.listContainer}
@@ -126,7 +130,7 @@ export default function Page() {
                 ListEmptyComponent={() => (
                     <View style={styles.emptyContainer}>
                         {loading ? (
-                            <ActivityIndicator size='small' color='#000' />
+                            <ActivityIndicator size="small" color="#000" />
                         ) : (
                             <View style={styles.emptyContent}>
                                 <Image
@@ -138,6 +142,11 @@ export default function Page() {
                         )}
                     </View>
                 )}
+                ListHeaderComponent={() => (
+                    <View style={styles.headerContainer}>
+                        <Text>Welcome {user?.firstName} 👋</Text>
+                    </View>
+                )}
             />
         </SafeAreaView>
     );
@@ -145,7 +154,7 @@ export default function Page() {
 
 const styles = StyleSheet.create({
     safeArea: {
-        backgroundColor: '#38B2AC',
+        backgroundColor: 'white',
         flex: 1,
     },
     listContainer: {
@@ -167,5 +176,12 @@ const styles = StyleSheet.create({
     emptyText: {
         fontSize: 16,
         color: '#FFFFFF',
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginVertical: 20,
+        paddingHorizontal: 16,
     },
 });
