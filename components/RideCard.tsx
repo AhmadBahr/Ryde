@@ -40,11 +40,29 @@ const RideCard = ({
                     </View>
                 </View>
 
-                <View style={styles.dateTimeContainer}>
+                <View style={styles.detailsContainer}>
                     <View style={styles.dateTimeRow}>
-                        <Text style={styles.dateTimeText}>Date & Time</Text>
-                        <Text style={styles.dateTimeText}>
+                        <Text style={styles.dateTimeLabel}>Date & Time</Text>
+                        <Text style={styles.dateTimeValue}>
                             {formattedDate} - {formattedTime} (Ride Time: {ride_time} minutes)
+                        </Text>
+                    </View>
+                    <View style={styles.driverContainer}>
+                        <Text style={styles.driverLabel}>Driver</Text>
+                        <Text style={styles.driverValue}>
+                            {driver.first_name} {driver.last_name}
+                        </Text>
+                    </View>
+                    <View style={styles.seatsContainer}>
+                        <Text style={styles.seatsLabel}>Car Seats</Text>
+                        <Text style={styles.seatsValue}>
+                            {driver.car_seats}
+                        </Text>
+                    </View>
+                    <View style={styles.paymentContainer}>
+                        <Text style={styles.paymentLabel}>Payment Status</Text>
+                        <Text style={styles.paymentValue}>
+                            {payment_status}
                         </Text>
                     </View>
                 </View>
@@ -73,7 +91,7 @@ const styles = StyleSheet.create({
         padding: 8,
     },
     contentContainer: {
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         width: '100%',
@@ -88,7 +106,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     row: {
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 5,
     },
@@ -101,22 +119,69 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: 'Jakarta-Medium',
     },
-    dateTimeContainer: {
+    detailsContainer: {
         width: '100%',
-        backgroundColor: '#38B2AC',
+        backgroundColor: '#F9FAFB',
         borderRadius: 8,
         padding: 10,
         marginTop: 10,
     },
     dateTimeRow: {
         flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        marginBottom: 10,
     },
-    dateTimeText: {
+    dateTimeLabel: {
         fontSize: 14,
         fontFamily: 'Jakarta-Medium',
         color: '#4A5568',
+        fontWeight: 'bold',
+    },
+    dateTimeValue: {
+        fontSize: 14,
+        fontFamily: 'Jakarta-Medium',
+        color: '#4A5568',
+    },
+    driverContainer: {
+        marginBottom: 10,
+    },
+    driverLabel: {
+        fontSize: 14,
+        fontFamily: 'Jakarta-Medium',
+        color: '#2D3748',
+        fontWeight: 'bold',
+    },
+    driverValue: {
+        fontSize: 14,
+        fontFamily: 'Jakarta-Medium',
+        color: '#2D3748',
+    },
+    seatsContainer: {
+        marginBottom: 10,
+    },
+    seatsLabel: {
+        fontSize: 14,
+        fontFamily: 'Jakarta-Medium',
+        color: '#2D3748',
+        fontWeight: 'bold',
+    },
+    seatsValue: {
+        fontSize: 14,
+        fontFamily: 'Jakarta-Medium',
+        color: '#2D3748',
+    },
+    paymentContainer: {
+        marginBottom: 10,
+    },
+    paymentLabel: {
+        fontSize: 14,
+        fontFamily: 'Jakarta-Medium',
+        color: '#E53E3E',
+        fontWeight: 'bold',
+    },
+    paymentValue: {
+        fontSize: 14,
+        fontFamily: 'Jakarta-Medium',
+        color: '#E53E3E',
     },
 });
 
