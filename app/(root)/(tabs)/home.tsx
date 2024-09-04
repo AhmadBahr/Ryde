@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import RideCard from '@/components/RideCard';
 import { icons, images } from '@/constants';
 import { useUser } from '@clerk/clerk-expo';
@@ -6,6 +6,7 @@ import { FlatList, StyleSheet, Text, View, Image, ActivityIndicator, Touchable, 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GoogleTextInput from '@/components/GoogleTextInput';
 import Map from '@/components/Map';
+import * as Location from 'expo-location'
 
 const recentRides = [
     {
@@ -115,8 +116,10 @@ const recentRides = [
 ];
 
 export default function Page() {
+    const { setUserLocation, setDestinationLocation } = useLocationStore();
     const { user } = useUser();
     const [loading, setLoading] = useState(true);
+    const [hasPermissions, setHasPermissions] = useState(false);
 
     const handleSignOut = () => {
         // Sign out logic goes here
@@ -124,6 +127,27 @@ export default function Page() {
     const handleDestinationPress = () => {
         // Handle destination press logic goes here
     };
+
+    useEffect(() => {
+        const requestLocation = async () => {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status === 'granted') {
+                setHasPermissions(false);
+                return;
+            }
+            let location = await Location.getCurrentPositionAsync();
+            const address = await Location.reverseGeocodeAsync({
+                latitude: location.coords?.latitude!,
+                longitude: location.coords?.longitude!
+            });
+            setUserLocation({
+                latitude: location.coords?.latitude!,
+                longitude: location.coords?.longitude!,
+                address: `${address[0].name} , ${address[0].region}`,
+            });
+        };
+        requestLocation();
+    }, []);
 
     const rides = recentRides.slice(0, 5);
 
@@ -260,3 +284,11 @@ const styles = StyleSheet.create({
         marginLeft: 20
     },
 });
+
+function useLocationStore(): { setUserLocation: any; setDestinationLocation: any; } {
+    throw new Error('Function not implemented.');
+}
+function requestLocation() {
+    throw new Error('Function not implemented.');
+}
+
