@@ -1,17 +1,32 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import MapView, { PROVIDER_DEFAULT } from "react-native-maps";
+import { calculateRegion } from "../lib/map";
+import { useLocation } from "@/store"; 
 
 const Map = () => {
-    const region ={}
+    const {
+        userLongitude,
+        userLatitude,
+        destinationLatitude,
+        destinationLongitude,
+    } = useLocation();  
+
+    const region = calculateRegion({
+        userLongitude,
+        userLatitude,
+        destinationLatitude,
+        destinationLongitude,
+    });
+
     return (
         <View style={styles.container}>
-            <MapView 
+            <MapView
                 provider={PROVIDER_DEFAULT}
                 style={styles.map}
                 mapType="mutedStandard"
                 showsPointsOfInterest={false}
-                // initialRegion={{reigon}}
+                initialRegion={region}  
                 showsUserLocation={true}
                 userInterfaceStyle="light"
             />
@@ -42,7 +57,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         padding: 10,
         borderRadius: 5,
-        tintColor:'black'
+        tintColor: 'black'
     },
     overlayText: {
         color: 'white',
