@@ -4,6 +4,7 @@ import { icons, images } from '@/constants';
 import { useUser } from '@clerk/clerk-expo';
 import { FlatList, StyleSheet, Text, View, Image, ActivityIndicator, Touchable, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import GoogleTextInput from '@/components/GoogleTextInput';
 
 const recentRides = [
     {
@@ -119,6 +120,9 @@ export default function Page() {
     const handleSignOut = () => {
         // Sign out logic goes here
     };
+    const handleDestinationPress = () => {
+        // Handle destination press logic goes here
+    };
 
     const rides = recentRides.slice(0, 5);
 
@@ -146,17 +150,24 @@ export default function Page() {
                     </View>
                 )}
                 ListHeaderComponent={() => (
-                    <View style={styles.headerContainer}>
-                        <Text style={styles.welcomeText}>
-                            Welcome, {user?.firstName || user?.emailAddresses[0].emailAddress.split('@')[0]} 👋
-                        </Text>
-                        <TouchableOpacity
-                            onPress={handleSignOut}
-                            style={styles.signOutButton}
-                        >
-                            <Image source={icons.out} style={styles.signOutIcon} />
-                        </TouchableOpacity>
-                    </View>
+                    <>
+                        <View style={styles.headerContainer}>
+                            <Text style={styles.welcomeText}>
+                                Welcome, {user?.firstName || user?.emailAddresses[0].emailAddress.split('@')[0]} 👋
+                            </Text>
+                            <TouchableOpacity
+                                onPress={handleSignOut}
+                                style={styles.signOutButton}
+                            >
+                                <Image source={icons.out} style={styles.signOutIcon} />
+                            </TouchableOpacity>
+                        </View>
+                        <GoogleTextInput
+                            icon={icons.search}
+                            containerStyle="bg-white shadow-md shadow-neutral-300"
+                            handlePress={handleDestinationPress}
+                        />
+                    </>
                 )}
             />
         </SafeAreaView>
