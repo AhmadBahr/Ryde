@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import RideCard from '@/components/RideCard';
-import { images } from '@/constants';
+import { icons, images } from '@/constants';
 import { useUser } from '@clerk/clerk-expo';
-import { FlatList, StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native';
+import { FlatList, StyleSheet, Text, View, Image, ActivityIndicator, Touchable, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const recentRides = [
@@ -114,9 +114,12 @@ const recentRides = [
 
 export default function Page() {
     const { user } = useUser();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-    // Mock data usage
+    const handleSignOut = () => {
+        // Sign out logic goes here
+    };
+
     const rides = recentRides.slice(0, 5);
 
     return (
@@ -144,7 +147,15 @@ export default function Page() {
                 )}
                 ListHeaderComponent={() => (
                     <View style={styles.headerContainer}>
-                        <Text>Welcome {user?.firstName} 👋</Text>
+                        <Text style={styles.welcomeText}>
+                            Welcome, {user?.firstName || user?.emailAddresses[0].emailAddress.split('@')[0]} 👋
+                        </Text>
+                        <TouchableOpacity
+                            onPress={handleSignOut}
+                            style={styles.signOutButton}
+                        >
+                            <Image source={icons.out} style={styles.signOutIcon} />
+                        </TouchableOpacity>
                     </View>
                 )}
             />
@@ -183,5 +194,22 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginVertical: 20,
         paddingHorizontal: 16,
+    },
+    welcomeText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    signOutButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: 'white',
+    },
+    signOutIcon: {
+        width: 16,
+        height: 16,
+        resizeMode: 'contain',
     },
 });
