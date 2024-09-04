@@ -1,3 +1,4 @@
+import { icons } from "@/constants";
 import { Ride } from "@/types/type";
 import { Text, View, StyleSheet, Image } from "react-native";
 
@@ -12,21 +13,45 @@ const RideCard = ({
         driver,
         payment_status,
     }
-}: { ride: Ride }) => (
-    <View style={styles.cardContainer}>
-        <View style={styles.innerContainer}>
-            <View style={styles.contentContainer}>
-                <Image
-                    source={{
-                        uri: `https://maps.geoapify.com/v1/staticmap?style=osm-bright&width=600&height=400&center=lonlat:${destination_longitude},${destination_latitude}&zoom=14&apiKey=${process.env.EXPO_PUBLIC_GEOAPIFY_API_KEY}`
-                    }}
-                    style={styles.mapImage}
-                />
+}: { ride: Ride }) => {
+    const rideDate = new Date(created_at);
+    const formattedDate = rideDate.toLocaleDateString();
+    const formattedTime = rideDate.toLocaleTimeString();
+
+    return (
+        <View style={styles.cardContainer}>
+            <View style={styles.innerContainer}>
+                <View style={styles.contentContainer}>
+                    <Image
+                        source={{
+                            uri: `https://maps.geoapify.com/v1/staticmap?style=osm-bright&width=300&height=200&center=lonlat:${destination_longitude},${destination_latitude}&zoom=14&apiKey=${process.env.EXPO_PUBLIC_GEOAPIFY_API_KEY}`
+                        }}
+                        style={styles.mapImage}
+                    />
+                    <View style={styles.textContainer}>
+                        <View style={styles.row}>
+                            <Image source={icons.to} style={styles.icon} />
+                            <Text style={styles.text} numberOfLines={1}>{origin_address}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Image source={icons.point} style={styles.icon} />
+                            <Text style={styles.text}>{destination_address}</Text>
+                        </View>
+                    </View>
+                </View>
+
+                <View style={styles.dateTimeContainer}>
+                    <View style={styles.dateTimeRow}>
+                        <Text style={styles.dateTimeText}>Date & Time</Text>
+                        <Text style={styles.dateTimeText}>
+                            {formattedDate} - {formattedTime} (Ride Time: {ride_time} minutes)
+                        </Text>
+                    </View>
+                </View>
             </View>
         </View>
-        <Text style={styles.driverName}>{driver.first_name}</Text>
-    </View>
-);
+    );
+};
 
 const styles = StyleSheet.create({
     cardContainer: {
@@ -42,25 +67,56 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     innerContainer: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: 12,
+        justifyContent: 'flex-start',
+        padding: 8,
     },
     contentContainer: {
-        flexDirection: 'row',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    mapImage: {
+        width: 150,
+        height: 100,
+        borderRadius: 8,
+    },
+    textContainer: {
+        flex: 1,
+        marginLeft: 10,
+    },
+    row: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        marginBottom: 5,
+    },
+    icon: {
+        width: 20,
+        height: 20,
+        marginRight: 5,
+    },
+    text: {
+        fontSize: 14,
+        fontFamily: 'Jakarta-Medium',
+    },
+    dateTimeContainer: {
+        width: '100%',
+        backgroundColor: '#38B2AC',
+        borderRadius: 8,
+        padding: 10,
+        marginTop: 10,
+    },
+    dateTimeRow: {
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'space-between',
     },
-    mapImage: {
-        width: 200, 
-        height: 133, 
-        borderRadius: 8, 
-    },
-    driverName: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        color: '#000',
+    dateTimeText: {
+        fontSize: 14,
+        fontFamily: 'Jakarta-Medium',
+        color: '#4A5568',
     },
 });
 
