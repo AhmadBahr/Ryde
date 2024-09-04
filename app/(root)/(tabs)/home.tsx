@@ -1,7 +1,7 @@
 import RideCard from '@/components/RideCard';
+import { images } from '@/constants';
 import { useUser } from '@clerk/clerk-expo';
-import React from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const recentRides = [
@@ -103,7 +103,7 @@ const recentRides = [
             last_name: "Johnson",
             profile_image_url:
                 "https://ucarecdn.com/0330d85c-232e-4c30-bd04-e5e4d0e3d688/-/preview/826x822/",
-            car_image_url:
+            car_image_url:inidicator 
                 "https://ucarecdn.com/289764fb-55b6-4427-b1d1-f655987b4a14/-/preview/930x932/",
             car_seats: 4,
             rating: "4.70",
@@ -113,13 +113,31 @@ const recentRides = [
 
 export default function Page() {
     const { user } = useUser();
+    const loading = false; 
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <FlatList
-                data={recentRides.slice(0, 5)}
+                data={recentRides} // Pass the recentRides data here
                 renderItem={({ item }) => <RideCard ride={item} />}
                 keyExtractor={(item) => item.ride_id}
+                contentContainerStyle={styles.listContainer}
+                keyboardShouldPersistTaps="handled"
+                ListEmptyComponent={() => (
+                    <View style={styles.emptyContainer}>
+                        {loading ? (
+                            <ActivityIndicator size='small' color='#000' />
+                        ) : (
+                            <View style={styles.emptyContent}>
+                                <Image
+                                    source={images.noResult}
+                                    style={styles.noResultImage}
+                                />
+                                <Text style={styles.emptyText}>No Results Found</Text>
+                            </View>
+                        )}
+                    </View>
+                )}
             />
         </SafeAreaView>
     );
@@ -129,5 +147,25 @@ const styles = StyleSheet.create({
     safeArea: {
         backgroundColor: '#38B2AC',
         flex: 1,
+    },
+    listContainer: {
+        paddingBottom: 100,
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyContent: {
+        alignItems: 'center',
+    },
+    noResultImage: {
+        width: 100,
+        height: 100,
+        resizeMode: 'contain',
+    },
+    emptyText: {
+        fontSize: 16,
+        color: '#FFFFFF',
     },
 });
