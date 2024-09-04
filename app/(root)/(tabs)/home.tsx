@@ -5,6 +5,7 @@ import { useUser } from '@clerk/clerk-expo';
 import { FlatList, StyleSheet, Text, View, Image, ActivityIndicator, Touchable, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GoogleTextInput from '@/components/GoogleTextInput';
+import Map from '@/components/Map';
 
 const recentRides = [
     {
@@ -164,15 +165,18 @@ export default function Page() {
                         </View>
                         <GoogleTextInput
                             icon={icons.search}
-                            containerStyle="bg-white shadow-md shadow-neutral-300"
+                            containerStyle={styles.googleInputContainer}
                             handlePress={handleDestinationPress}
                         />
-                        <>
-                        <Text className='text-xl font-Jakarta-bold mt-5 mb-3'>
+                        <Text style={styles.currentLocationText}>
                             Your Current Location
                         </Text>
-                        <View className='flex flex-row items-center bg-transperant h-[300px]'></View>
-                        </>
+                        <View style={styles.locationContainer}>
+                            <Map />
+                        </View>
+                        <Text style={styles.recentRidesText}>
+                            Recent Rides
+                        </Text>
                     </>
                 )}
             />
@@ -228,5 +232,31 @@ const styles = StyleSheet.create({
         width: 16,
         height: 16,
         resizeMode: 'contain',
+    },
+    googleInputContainer: {
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        marginBottom: 20,
+    },
+    currentLocationText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginVertical: 15,
+    },
+    locationContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+        height: 300,
+    },
+    recentRidesText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 20,
+        marginBottom: 10,
+        marginLeft: 20
     },
 });
