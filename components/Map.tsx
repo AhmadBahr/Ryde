@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import MapView, { Marker , PROVIDER_DEFAULT } from "react-native-maps";
+import MapView, { Marker, PROVIDER_DEFAULT } from "react-native-maps";
 import { calculateRegion, generateMarkersFromData } from "../lib/map";
 import { useDriverStore, useLocation } from "@/store";
 import { MarkerData } from "@/types/type";
@@ -64,14 +64,15 @@ const Map = () => {
     });
 
     useEffect(() => {
+        setDrivers(drivers);
         if (Array.isArray(drivers) && userLatitude && userLongitude) {
             const newMarkers = generateMarkersFromData({
-                data: drivers, 
+                data: drivers,
                 userLatitude,
                 userLongitude,
             });
             setMarkers(newMarkers);
-            setDrivers(drivers); 
+            setDrivers(drivers);
         }
     }, [drivers, userLatitude, userLongitude, setDrivers]);
 
