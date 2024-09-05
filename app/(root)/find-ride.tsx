@@ -11,7 +11,7 @@ const FindRide = () => {
     const { userAddress, destinationAddress, setUserLocation, setDestinationLocation } = useLocationStore();
 
     return (
-        <RideLayout title="Ride">
+        <RideLayout title="Ride" snapPoints={['85%']}>
             <View style={styles.container}>
                 <Text style={styles.label}>From</Text>
                 <GoogleTextInput
