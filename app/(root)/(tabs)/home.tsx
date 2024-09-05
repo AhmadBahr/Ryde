@@ -7,6 +7,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import GoogleTextInput from '@/components/GoogleTextInput';
 import Map from '@/components/Map';
 import * as Location from 'expo-location'
+import { router } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+
 
 const recentRides = [
     {
@@ -124,9 +127,16 @@ export default function Page() {
     const handleSignOut = () => {
         // Sign out logic goes here
     };
-    const handleDestinationPress = () => {
-        // Handle destination press logic goes here
+    const handleDestinationPress = (location: {
+        latitude: number;
+        longitude: number;
+        address: string;
+    }) => {
+        setDestinationLocation(location);
+        router.push('/(root)/find-ride');
     };
+
+
 
     useEffect(() => {
         const requestLocation = async () => {
