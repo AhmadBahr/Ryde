@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import { router } from 'expo-router';
 import { icons } from '@/constants';
 import Map from '@/components/Map';
-import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 
 type RideLayoutProps = {
     title?: string;
@@ -35,9 +35,9 @@ const RideLayout = ({ title, children }: RideLayoutProps) => {
                 <Map />
             </View>
             <BottomSheet ref={bottomSheetRef} snapPoints={['40%', '85%']} index={0}>
-                <BottomSheetScrollView style={{ flex: 1, padding: 20 }}>
+                <BottomSheetView style={{ flex: 1, padding: 20 }}>
                     {children}
-                </BottomSheetScrollView>
+                </BottomSheetView>
             </BottomSheet>
             <Text>Bottom of the layout</Text>
         </GestureHandlerRootView>
