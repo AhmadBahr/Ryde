@@ -1,5 +1,9 @@
 import { GoogleInputProps } from "@/types/type";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Image } from "react-native";
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { icons } from "@/constants";
+
+const googlePlacesApiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 
 const GoogleTextInput = ({
     icon,
@@ -7,8 +11,70 @@ const GoogleTextInput = ({
     textInputBackgroundColor,
     handlePress,
 }: GoogleInputProps) => (
-    <View style={[styles.container, , { backgroundColor: textInputBackgroundColor }]}>
-        <Text>Search</Text>
+    <View style={[styles.container, { backgroundColor: textInputBackgroundColor }]}>
+        <GooglePlacesAutocomplete
+            fetchDetails={true}
+            placeholder="Where you want to go?"
+            debounce={200}
+            onPress={(data, details = null) => {
+                handlePress({
+                    latitude: details?.geometry.location.lat!,
+                    longitude: details?.geometry.location.lng!,
+                    address: data.description,
+                });
+            }}
+            renderLeftButton={() => (
+                <View className="justify-center items-center w-6 h-6">
+                    <Image source={icon ? icon : icons.search} className="w-6 h-6" resizeMode="contain" />
+                </View>
+            )}
+            textInputProps={{
+                placeholderTextColor: 'gray',
+                placeholder: initialLocation ?? "Where do you want to go?",
+                color: 'black',
+            }}
+            query={{
+                key: googlePlacesApiKey,
+                language: 'en',
+            }}
+            styles={{
+                textInputContainer: {
+                    width: '100%',
+                    backgroundColor: textInputBackgroundColor,
+                    borderRadius: 15,
+                    padding: 10,
+                    fontSize: 16,
+                    fontFamily: 'Poppins-Regular',
+                    height: 50,
+                },
+                textInput: {
+                    backgroundColor: textInputBackgroundColor,
+                    borderRadius: 15,
+                    padding: 10,
+                    fontSize: 16,
+                    fontFamily: 'Poppins-Regular',
+                    width: '100%',
+                },
+                listView: {
+                    position: 'absolute',
+                    top: 50,
+                    width: '100%',
+                    backgroundColor: 'white',
+                    borderRadius: 15,
+                    zIndex: 50,
+                },
+                row: {
+                    padding: 10,
+                    fontSize: 16,
+                    fontFamily: 'Poppins-Regular',
+                    backgroundColor: 'white',
+                },
+                separator: {
+                    height: 0.5,
+                    backgroundColor: 'lightgray',
+                },
+            }}
+        />
     </View>
 );
 
