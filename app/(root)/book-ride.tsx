@@ -10,17 +10,17 @@ import { useDriverStore, useLocationStore } from '@/store';
 import Payment from '@/components/Payment';
 
 const BookRide = () => {
-    const { user } = useUser();
     const { userAddress, destinationAddress } = useLocationStore();
     const { drivers, selectedDriver } = useDriverStore();
+    const { user } = useUser();
 
     const driverDetails = drivers?.find((driver) => +driver.id === selectedDriver);
 
     return (
         <StripeProvider
             publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
-            merchantIdentifier="merchant.uber.com" 
-            urlScheme="myapp" 
+            merchantIdentifier="merchant.uber.com"
+            urlScheme="myapp"
         >
             <RideLayout title="Book Ride">
                 <>
@@ -85,7 +85,13 @@ const BookRide = () => {
                         </View>
                     </View>
 
-                    <Payment />
+                    <Payment
+                        fullName={user?.fullName!}
+                        email={user?.emailAddresses[0].emailAddress!}
+                        amount={driverDetails?.price!}
+                        driverId={driverDetails?.id!}
+                        rideTime= {driverDetails?.time!}
+                    />
                 </>
             </RideLayout>
         </StripeProvider>
