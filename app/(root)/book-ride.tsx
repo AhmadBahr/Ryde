@@ -13,32 +13,14 @@ const BookRide = () => {
     const { user } = useUser();
     const { userAddress, destinationAddress } = useLocationStore();
     const { drivers, selectedDriver } = useDriverStore();
-    const [publishableKey, setPublishableKey] = useState<string | null>(null);
-
-    const fetchPublishableKey = async () => {
-        try {
-            const key = await fetchKey();
-            setPublishableKey(key);
-        } catch (error) {
-            console.error('Failed to fetch publishable key', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchPublishableKey();
-    }, []);
 
     const driverDetails = drivers?.find((driver) => +driver.id === selectedDriver);
 
-    if (!publishableKey) {
-        return <Text>Loading payment options...</Text>; 
-    }
-
     return (
         <StripeProvider
-            publishableKey={publishableKey}
-            merchantIdentifier="merchant.identifier" 
-            urlScheme="your-url-scheme" 
+            publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
+            merchantIdentifier="merchant.uber.com" 
+            urlScheme="myapp" 
         >
             <RideLayout title="Book Ride">
                 <>
