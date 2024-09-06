@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image, Text, View, StyleSheet } from 'react-native';
 import { useUser } from '@clerk/clerk-expo';
+import { StripeProvider } from '@stripe/stripe-react-native';
+
 import RideLayout from '@/components/RideLayout';
 import { icons } from '@/constants';
 import { formatTime } from '@/lib/utils';
@@ -11,81 +13,100 @@ const BookRide = () => {
     const { user } = useUser();
     const { userAddress, destinationAddress } = useLocationStore();
     const { drivers, selectedDriver } = useDriverStore();
+    const [publishableKey, setPublishableKey] = useState<string | null>(null);
 
-    const driverDetails = drivers?.find(
-        (driver) => +driver.id === selectedDriver
-    );
+    const fetchPublishableKey = async () => {
+        try {
+            const key = await fetchKey();
+            setPublishableKey(key);
+        } catch (error) {
+            console.error('Failed to fetch publishable key', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPublishableKey();
+    }, []);
+
+    const driverDetails = drivers?.find((driver) => +driver.id === selectedDriver);
+
+    if (!publishableKey) {
+        return <Text>Loading payment options...</Text>; 
+    }
 
     return (
-        <RideLayout title="Book Ride">
-            <>
-                <Text style={styles.heading}>Ride Information</Text>
+        <StripeProvider
+            publishableKey={publishableKey}
+            merchantIdentifier="merchant.identifier" 
+            urlScheme="your-url-scheme" 
+        >
+            <RideLayout title="Book Ride">
+                <>
+                    <Text style={styles.heading}>Ride Information</Text>
 
-                <View style={styles.driverContainer}>
-                    <Image
-                        source={{ uri: driverDetails?.profile_image_url }}
-                        style={styles.driverImage}
-                    />
+                    <View style={styles.driverContainer}>
+                        <Image
+                            source={{ uri: driverDetails?.profile_image_url }}
+                            style={styles.driverImage}
+                        />
 
-                    <View style={styles.driverInfo}>
-                        <Text style={styles.driverName}>
-                            {driverDetails?.title}
-                        </Text>
+                        <View style={styles.driverInfo}>
+                            <Text style={styles.driverName}>{driverDetails?.title}</Text>
 
-                        <View style={styles.ratingContainer}>
-                            <Image
-                                source={icons.star}
-                                style={styles.starIcon}
-                                resizeMode="contain"
-                            />
-                            <Text style={styles.ratingText}>
-                                {driverDetails?.rating}
+                            <View style={styles.ratingContainer}>
+                                <Image
+                                    source={icons.star}
+                                    style={styles.starIcon}
+                                    resizeMode="contain"
+                                />
+                                <Text style={styles.ratingText}>{driverDetails?.rating}</Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={styles.infoBox}>
+                        <View style={styles.infoRow}>
+                            <Text style={styles.infoLabel}>Ride Price</Text>
+                            <Text style={styles.infoValue}>
+                                ${driverDetails?.price}
+                            </Text>
+                        </View>
+
+                        <View style={styles.infoRow}>
+                            <Text style={styles.infoLabel}>Pickup Time</Text>
+                            <Text style={styles.infoValue}>
+                                {formatTime(driverDetails?.time!)}
+                            </Text>
+                        </View>
+
+                        <View style={styles.infoRow}>
+                            <Text style={styles.infoLabel}>Car Seats</Text>
+                            <Text style={styles.infoValue}>
+                                {driverDetails?.car_seats}
                             </Text>
                         </View>
                     </View>
-                </View>
 
-                <View style={styles.infoBox}>
-                    <View style={styles.infoRow}>
-                        <Text style={styles.infoLabel}>Ride Price</Text>
-                        <Text style={styles.infoValue}>
-                            ${driverDetails?.price}
-                        </Text>
+                    <View style={styles.addressContainer}>
+                        <View style={styles.addressRow}>
+                            <Image source={icons.to} style={styles.icon} />
+                            <Text style={styles.addressText}>
+                                {userAddress}
+                            </Text>
+                        </View>
+
+                        <View style={styles.addressRow}>
+                            <Image source={icons.point} style={styles.icon} />
+                            <Text style={styles.addressText}>
+                                {destinationAddress}
+                            </Text>
+                        </View>
                     </View>
 
-                    <View style={styles.infoRow}>
-                        <Text style={styles.infoLabel}>Pickup Time</Text>
-                        <Text style={styles.infoValue}>
-                            {formatTime(driverDetails?.time!)}
-                        </Text>
-                    </View>
-
-                    <View style={styles.infoRow}>
-                        <Text style={styles.infoLabel}>Car Seats</Text>
-                        <Text style={styles.infoValue}>
-                            {driverDetails?.car_seats}
-                        </Text>
-                    </View>
-                </View>
-
-                <View style={styles.addressContainer}>
-                    <View style={styles.addressRow}>
-                        <Image source={icons.to} style={styles.icon} />
-                        <Text style={styles.addressText}>
-                            {userAddress}
-                        </Text>
-                    </View>
-
-                    <View style={styles.addressRow}>
-                        <Image source={icons.point} style={styles.icon} />
-                        <Text style={styles.addressText}>
-                            {destinationAddress}
-                        </Text>
-                    </View>
-                </View>
-                <Payment/>
-            </>
-        </RideLayout>
+                    <Payment />
+                </>
+            </RideLayout>
+        </StripeProvider>
     );
 };
 
