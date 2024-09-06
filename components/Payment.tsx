@@ -1,9 +1,10 @@
+import React, { useState } from 'react';
 import CustomButton from '@/components/CustomButton';
 import { fetchAPI } from '@/lib/fetch';
 import { PaymentProps } from '@/types/type';
-import { PaymentMethod, PaymentSheetError, useStripe } from '@stripe/stripe-react-native';
-import { useState } from 'react';
+import { PaymentSheetError, useStripe } from '@stripe/stripe-react-native';
 import { Alert } from 'react-native';
+import { Text } from 'react-native';
 
 const Payment = ({
     fullName,
@@ -13,55 +14,88 @@ const Payment = ({
     rideTime,
 }: PaymentProps) => {
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
-    const [success, setsuccess] = useState(false)
+    const [success, setSuccess] = useState(false);
 
     const confirmHandler = async (paymentMethod, intentCreationCallback) => {
-        const { paymentIntent, customer } = await fetchAPI('/(api)/(stripe)/create', {
-            method: 'POST',
-            body: JSON.stringify({
-                paymentMethod: paymentMethod,
-                name: fullName || email.split('@')[0],
-                email: email,
-                amount: amount,
-                driverId: driverId,
-                rideTime: rideTime
-            })
-        })
-        const { clientSecret, error } = await Response.json();
-        if (clientSecret) {
-            intentCreationCallback({ clientSecret })
-        } else {
-            intentCreationCallback({ error })
+        try {
+            const response = await fetchAPI('/api/stripe/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    paymentMethodId: paymentMethod.id,
+                    name: fullName || email.split('@')[0], 
+                    email,
+                    amount,
+                    driverId,
+                    rideTime,
+                }),
+            });
+
+            const { paymentIntent, customer } = await response.json();
+
+            if (paymentIntent && paymentIntent.client_secret) {
+                intentCreationCallback({ clientSecret: paymentIntent.client_secret });
+
+                const paymentResult = await fetchAPI('/api/stripe/pay', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        paymentIntentId: paymentIntent.id,
+                        paymentMethodId: paymentMethod.id,
+                        customerId: customer.id,
+                    }),
+                });
+
+                const result = await paymentResult.json();
+                if (!result.success) {
+                    throw new Error('Payment failed.');
+                }
+            } else {
+                intentCreationCallback({ error: 'Failed to retrieve client secret' });
+            }
+        } catch (error) {
+            console.error('Error in confirmHandler:', error);
+            intentCreationCallback({ error: error.message });
         }
-    }
+    };
 
     const initializePaymentSheet = async () => {
         const { error } = await initPaymentSheet({
-            merchantDisplayName: "Ride",
+            merchantDisplayName: "Ride", 
             intentConfiguration: {
                 mode: {
-                    amount: 1099,
+                    amount: amount * 100, 
                     currencyCode: "USD",
                 },
-                confirmHandler: confirmHandler,
+                confirmHandler: confirmHandler, 
             },
         });
+
         if (error) {
-            //
+            console.error('Error initializing payment sheet:', error);
+            Alert.alert('Payment Initialization Error', error.message);
         }
-    }
+    };
 
     const openPaymentSheet = async () => {
         await initializePaymentSheet();
         const { error } = await presentPaymentSheet();
+
         if (error) {
             if (error.code === PaymentSheetError.Canceled) {
-                Alert.alert(`Error code: ${error.code}`, error.message);
+                Alert.alert('Payment Canceled', error.message);
             } else {
-                setsuccess(true)
+                Alert.alert('Payment Failed', error.message);
             }
+        } else {
+            setSuccess(true);
+            Alert.alert('Payment Successful', 'Your ride has been confirmed!');
         }
-    }
+    };
 
     return (
         <>
@@ -70,6 +104,7 @@ const Payment = ({
                 className="my-10"
                 onPress={openPaymentSheet}
             />
+            {success && <Text>Payment successful! Ride confirmed.</Text>}
         </>
     );
 };
