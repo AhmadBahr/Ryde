@@ -1,79 +1,47 @@
-import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
-import CustomButton from "./CustomButton";
-import { icons } from "../constants";
+import { useOAuth } from "@clerk/clerk-expo";
+import { router } from "expo-router";
+import { Alert, Image, Text, View } from "react-native";
+
+import CustomButton from "@/components/CustomButton";
+import { icons } from "@/constants";
+import { googleOAuth } from "@/lib/auth";
 
 const OAuth = () => {
-    const handleGoogleSignIn = () => {
-        // Implement Google sign-in logic here
+    const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+
+    const handleGoogleSignIn = async () => {
+        const result = await googleOAuth(startOAuthFlow);
+
+        if (result.code === "session_exists") {
+            Alert.alert("Success", "Session exists. Redirecting to home screen.");
+            router.replace("/(root)/(tabs)/home");
+        }
+
+        Alert.alert(result.success ? "Success" : "Error", result.message);
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.separator}>
-                <View style={styles.line} />
-                <Text style={styles.text}>Or</Text>
-                <View style={styles.line} />
+        <View>
+            <View className="flex flex-row justify-center items-center mt-4 gap-x-3">
+                <View className="flex-1 h-[1px] bg-general-100" />
+                <Text className="text-lg">Or</Text>
+                <View className="flex-1 h-[1px] bg-general-100" />
             </View>
+
             <CustomButton
-                title="Login with Google"
+                title="Log In with Google"
+                className="mt-5 w-full shadow-none"
                 IconLeft={() => (
                     <Image
                         source={icons.google}
                         resizeMode="contain"
-                        style={styles.icon}
-                    />
+                        className="w-5 h-5 mx-2" />
                 )}
-                bgVarient="outline"
-                textVarient="primary"
-                onPress={handleGoogleSignIn}
-                style={styles.button}
-                IconRight={undefined}
-            />
+                bgVariant="outline"
+                textVariant="primary"
+                onPress={handleGoogleSignIn} IconRight={undefined} style={undefined}            />
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        marginBottom: 20,
-        alignItems: 'center',
-    },
-    separator: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: '100%',
-        marginBottom: 20,
-    },
-    line: {
-        flex: 1,
-        height: 1,
-        backgroundColor: '#E5E7EB',
-    },
-    text: {
-        fontSize: 18,
-        color: 'black',
-        marginHorizontal: 12,
-    },
-    icon: {
-        width: 20,
-        height: 20,
-        marginRight: 8,
-    },
-    button: {
-        width: '100%',
-        borderRadius: 30,
-        paddingVertical: 14,
-        paddingHorizontal: 24,
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        backgroundColor: 'white',
-        borderColor: 'black',
-        borderWidth: 1
-    },
-});
 
 export default OAuth;
