@@ -1,192 +1,108 @@
-import React, { useState, useEffect } from 'react';
-import { Image, Text, View, StyleSheet } from 'react-native';
-import { useUser } from '@clerk/clerk-expo';
-import { StripeProvider } from '@stripe/stripe-react-native';
+import { useUser } from "@clerk/clerk-expo";
+import { StripeProvider } from "@stripe/stripe-react-native";
+import { Image, Text, View } from "react-native";
 
-import RideLayout from '@/components/RideLayout';
-import { icons } from '@/constants';
-import { formatTime } from '@/lib/utils';
-import { useDriverStore, useLocationStore } from '@/store';
-import Payment from '@/components/Payment';
+import Payment from "@/components/Payment";
+import RideLayout from "@/components/RideLayout";
+import { icons } from "@/constants";
+import { formatTime } from "@/lib/utils";
+import { useDriverStore, useLocationStore } from "@/store";
 
 const BookRide = () => {
-    const { userAddress, destinationAddress } = useLocationStore();
-    const { drivers, selectedDriver } = useDriverStore();
-    const { user } = useUser();
+  const { user } = useUser();
+  const { userAddress, destinationAddress } = useLocationStore();
+  const { drivers, selectedDriver } = useDriverStore();
 
-    const driverDetails = drivers?.find((driver) => +driver.id === selectedDriver);
+  const driverDetails = drivers?.filter(
+    (driver) => +driver.id === selectedDriver,
+  )[0];
 
-    return (
-        <StripeProvider
-            publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
-            merchantIdentifier="merchant.uber.com"
-            urlScheme="myapp"
-        >
-            <RideLayout title="Book Ride">
-                <>
-                    <Text style={styles.heading}>Ride Information</Text>
+  return (
+    <StripeProvider
+      publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
+      merchantIdentifier="merchant.com.uber"
+      urlScheme="myapp"
+    >
+      <RideLayout title="Book Ride">
+        <>
+          <Text className="text-xl font-JakartaSemiBold mb-3">
+            Ride Information
+          </Text>
 
-                    <View style={styles.driverContainer}>
-                        <Image
-                            source={{ uri: driverDetails?.profile_image_url }}
-                            style={styles.driverImage}
-                        />
+          <View className="flex flex-col w-full items-center justify-center mt-10">
+            <Image
+              source={{ uri: driverDetails?.profile_image_url }}
+              className="w-28 h-28 rounded-full"
+            />
 
-                        <View style={styles.driverInfo}>
-                            <Text style={styles.driverName}>{driverDetails?.title}</Text>
+            <View className="flex flex-row items-center justify-center mt-5 space-x-2">
+              <Text className="text-lg font-JakartaSemiBold">
+                {driverDetails?.title}
+              </Text>
 
-                            <View style={styles.ratingContainer}>
-                                <Image
-                                    source={icons.star}
-                                    style={styles.starIcon}
-                                    resizeMode="contain"
-                                />
-                                <Text style={styles.ratingText}>{driverDetails?.rating}</Text>
-                            </View>
-                        </View>
-                    </View>
+              <View className="flex flex-row items-center space-x-0.5">
+                <Image
+                  source={icons.star}
+                  className="w-5 h-5"
+                  resizeMode="contain"
+                />
+                <Text className="text-lg font-JakartaRegular">
+                  {driverDetails?.rating}
+                </Text>
+              </View>
+            </View>
+          </View>
 
-                    <View style={styles.infoBox}>
-                        <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>Ride Price</Text>
-                            <Text style={styles.infoValue}>
-                                ${driverDetails?.price}
-                            </Text>
-                        </View>
+          <View className="flex flex-col w-full items-start justify-center py-3 px-5 rounded-3xl bg-general-600 mt-5">
+            <View className="flex flex-row items-center justify-between w-full border-b border-white py-3">
+              <Text className="text-lg font-JakartaRegular">Ride Price</Text>
+              <Text className="text-lg font-JakartaRegular text-[#0CC25F]">
+                ${driverDetails?.price}
+              </Text>
+            </View>
 
-                        <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>Pickup Time</Text>
-                            <Text style={styles.infoValue}>
-                                {formatTime(driverDetails?.time!)}
-                            </Text>
-                        </View>
+            <View className="flex flex-row items-center justify-between w-full border-b border-white py-3">
+              <Text className="text-lg font-JakartaRegular">Pickup Time</Text>
+              <Text className="text-lg font-JakartaRegular">
+                {formatTime(driverDetails?.time!)}
+              </Text>
+            </View>
 
-                        <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>Car Seats</Text>
-                            <Text style={styles.infoValue}>
-                                {driverDetails?.car_seats}
-                            </Text>
-                        </View>
-                    </View>
+            <View className="flex flex-row items-center justify-between w-full py-3">
+              <Text className="text-lg font-JakartaRegular">Car Seats</Text>
+              <Text className="text-lg font-JakartaRegular">
+                {driverDetails?.car_seats}
+              </Text>
+            </View>
+          </View>
 
-                    <View style={styles.addressContainer}>
-                        <View style={styles.addressRow}>
-                            <Image source={icons.to} style={styles.icon} />
-                            <Text style={styles.addressText}>
-                                {userAddress}
-                            </Text>
-                        </View>
+          <View className="flex flex-col w-full items-start justify-center mt-5">
+            <View className="flex flex-row items-center justify-start mt-3 border-t border-b border-general-700 w-full py-3">
+              <Image source={icons.to} className="w-6 h-6" />
+              <Text className="text-lg font-JakartaRegular ml-2">
+                {userAddress}
+              </Text>
+            </View>
 
-                        <View style={styles.addressRow}>
-                            <Image source={icons.point} style={styles.icon} />
-                            <Text style={styles.addressText}>
-                                {destinationAddress}
-                            </Text>
-                        </View>
-                    </View>
+            <View className="flex flex-row items-center justify-start border-b border-general-700 w-full py-3">
+              <Image source={icons.point} className="w-6 h-6" />
+              <Text className="text-lg font-JakartaRegular ml-2">
+                {destinationAddress}
+              </Text>
+            </View>
+          </View>
 
-                    <Payment
-                        fullName={user?.fullName!}
-                        email={user?.emailAddresses[0].emailAddress!}
-                        amount={driverDetails?.price!}
-                        driverId={driverDetails?.id!}
-                        rideTime= {driverDetails?.time!}
-                    />
-                </>
-            </RideLayout>
-        </StripeProvider>
-    );
+          <Payment
+            fullName={user?.fullName!}
+            email={user?.emailAddresses[0].emailAddress!}
+            amount={driverDetails?.price!}
+            driverId={driverDetails?.id}
+            rideTime={driverDetails?.time!}
+          />
+        </>
+      </RideLayout>
+    </StripeProvider>
+  );
 };
-
-const styles = StyleSheet.create({
-    heading: {
-        fontSize: 24,
-        fontFamily: 'JakartaSemiBold',
-        marginBottom: 16,
-    },
-    driverContainer: {
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 20,
-    },
-    driverImage: {
-        width: 112,
-        height: 112,
-        borderRadius: 56,
-    },
-    driverInfo: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10,
-    },
-    driverName: {
-        fontSize: 20,
-        fontFamily: 'JakartaSemiBold',
-    },
-    ratingContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginLeft: 10,
-    },
-    starIcon: {
-        width: 20,
-        height: 20,
-    },
-    ratingText: {
-        fontSize: 20,
-        fontFamily: 'JakartaRegular',
-        marginLeft: 4,
-    },
-    infoBox: {
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        padding: 20,
-        borderRadius: 20,
-        backgroundColor: '#1E1E1E',
-        marginTop: 20,
-    },
-    infoRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-        borderBottomWidth: 1,
-        borderBottomColor: '#FFFFFF',
-        paddingVertical: 10,
-    },
-    infoLabel: {
-        fontSize: 18,
-        fontFamily: 'JakartaRegular',
-        color: '#FFFFFF',
-    },
-    infoValue: {
-        fontSize: 18,
-        fontFamily: 'JakartaRegular',
-        color: '#0CC25F',
-    },
-    addressContainer: {
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        marginTop: 20,
-    },
-    addressRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: '#2C2C2C',
-        paddingVertical: 10,
-        width: '100%',
-    },
-    icon: {
-        width: 24,
-        height: 24,
-    },
-    addressText: {
-        fontSize: 18,
-        fontFamily: 'JakartaRegular',
-        marginLeft: 8,
-    },
-});
 
 export default BookRide;

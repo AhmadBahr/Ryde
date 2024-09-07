@@ -1,144 +1,93 @@
-import React, { useCallback, useState } from "react";
+import { useSignIn } from "@clerk/clerk-expo";
+import { Link, router } from "expo-router";
+import { useCallback, useState } from "react";
+import { Alert, Image, ScrollView, Text, View } from "react-native";
+
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
-import { images, icons } from "@/constants";
-import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
-import { Link, useRouter } from "expo-router";
 import OAuth from "@/components/OAuth";
-import { useSignIn } from "@clerk/clerk-expo";
+import { icons, images } from "@/constants";
 
 const SignIn = () => {
-    const { signIn, setActive, isLoaded } = useSignIn()
-    const router = useRouter()
-    const [form, setForm] = useState({
-        email: '',
-        password: '',
-    });
+  const { signIn, setActive, isLoaded } = useSignIn();
 
-    const onSignInPress = useCallback(async () => {
-        if (!isLoaded) {
-            return
-        }
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
 
-        try {
-            const signInAttempt = await signIn.create({
-                identifier: form.email,
-                password: form.password
-            })
+  const onSignInPress = useCallback(async () => {
+    if (!isLoaded) return;
 
-            if (signInAttempt.status === 'complete') {
-                await setActive({ session: signInAttempt.createdSessionId })
-                router.replace('/')
-            } else {
-                // See https://clerk.com/docs/custom-flows/error-handling
-                // for more info on error handling
-                console.error(JSON.stringify(signInAttempt, null, 2))
-            }
-        } catch (err: any) {
-            console.error(JSON.stringify(err, null, 2))
-        }
-    }, [isLoaded, form.email, form.password])
+    try {
+      const signInAttempt = await signIn.create({
+        identifier: form.email,
+        password: form.password,
+      });
 
-    return (
-        <ScrollView style={styles.scrollView}>
-            <View style={styles.container}>
-                <View style={styles.imageContainer}>
-                    <Image source={images.signUpCar} style={styles.image} />
-                    <Text style={styles.title}>Welcome 👋</Text>
-                </View>
-                <View style={styles.inputContainer}>
-                    <InputField
-                        label="Email"
-                        placeholder="Enter your Email"
-                        icon={icons.email}
-                        value={form.email}
-                        onChangeText={(value) => setForm({ ...form, email: value })}
-                    />
-                    <InputField
-                        label="Password"
-                        placeholder="Enter your password"
-                        icon={icons.lock}
-                        secureTextEntry={true}
-                        value={form.password}
-                        onChangeText={(value) => setForm({ ...form, password: value })}
-                    />
-                    <CustomButton
-                        title="Sign In"
-                        onPress={onSignInPress}
-                        style={styles.signUpButton}
-                        IconLeft={undefined}
-                        IconRight={undefined}
-                    />
-                </View>
-                <OAuth />
-                <Link href="/sign-up" style={styles.link}>
-                    <Text style={styles.text}>Don't have an Accont? </Text>
-                    <Text style={styles.highlightedText}>Sign Up</Text>
-                </Link>
-            </View>
-        </ScrollView>
-    );
+      if (signInAttempt.status === "complete") {
+        await setActive({ session: signInAttempt.createdSessionId });
+        router.replace("/(root)/(tabs)/home");
+      } else {
+        // See https://clerk.com/docs/custom-flows/error-handling for more info on error handling
+        console.log(JSON.stringify(signInAttempt, null, 2));
+        Alert.alert("Error", "Log in failed. Please try again.");
+      }
+    } catch (err: any) {
+      console.log(JSON.stringify(err, null, 2));
+      Alert.alert("Error", err.errors[0].longMessage);
+    }
+  }, [isLoaded, form]);
+
+  return (
+    <ScrollView className="flex-1 bg-white">
+      <View className="flex-1 bg-white">
+        <View className="relative w-full h-[250px]">
+          <Image source={images.signUpCar} className="z-0 w-full h-[250px]" />
+          <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
+            Welcome 👋
+          </Text>
+        </View>
+
+        <View className="p-5">
+          <InputField
+            label="Email"
+            placeholder="Enter email"
+            icon={icons.email}
+            textContentType="emailAddress"
+            value={form.email}
+            onChangeText={(value) => setForm({ ...form, email: value })}
+          />
+
+          <InputField
+            label="Password"
+            placeholder="Enter password"
+            icon={icons.lock}
+            secureTextEntry={true}
+            textContentType="password"
+            value={form.password}
+            onChangeText={(value) => setForm({ ...form, password: value })}
+          />
+
+          <CustomButton
+            title="Sign In"
+            onPress={onSignInPress}
+            className="mt-6"
+          />
+
+          <OAuth />
+
+          <Link
+            href="/sign-up"
+            className="text-lg text-center text-general-200 mt-10"
+          >
+            Don't have an account?{" "}
+            <Text className="text-primary-500">Sign Up</Text>
+          </Link>
+        </View>
+      </View>
+    </ScrollView>
+  );
 };
-
-const styles = StyleSheet.create({
-    scrollView: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-        paddingHorizontal: 20,
-    },
-    imageContainer: {
-        position: 'relative',
-        width: '100%',
-        height: 250,
-        marginBottom: 20,
-    },
-    image: {
-        width: '100%',
-        height: 250,
-        zIndex: 0,
-    },
-    title: {
-        fontSize: 24,
-        color: 'black',
-        fontFamily: 'Jakarta-SemiBold',
-        position: 'absolute',
-        bottom: 5,
-        left: 5,
-    },
-    inputContainer: {
-        marginBottom: 20,
-    },
-    signUpButton: {
-        width: '100%',
-        backgroundColor: '#007AFF',
-        borderRadius: 30,
-        paddingVertical: 14,
-        paddingHorizontal: 24,
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        marginBottom: 20,
-        marginTop: 20
-    },
-    link: {
-        marginTop: 10,
-        textAlign: 'center',
-    },
-    text: {
-        fontSize: 16,
-        color: '#B0B0B0',
-    },
-    highlightedText: {
-        fontSize: 16,
-        color: '#007AFF',
-        fontWeight: 'bold',
-    },
-});
 
 export default SignIn;

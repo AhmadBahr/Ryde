@@ -1,189 +1,80 @@
+import { Image, Text, View } from "react-native";
+
 import { icons } from "@/constants";
+import { formatDate, formatTime } from "@/lib/utils";
 import { Ride } from "@/types/type";
-import { Text, View, StyleSheet, Image } from "react-native";
 
-const RideCard = ({
-    ride: {
-        destination_longitude,
-        destination_latitude,
-        origin_address,
-        destination_address,
-        created_at,
-        ride_time,
-        driver,
-        payment_status,
-    }
-}: { ride: Ride }) => {
-    const rideDate = new Date(created_at);
-    const formattedDate = rideDate.toLocaleDateString();
-    const formattedTime = rideDate.toLocaleTimeString();
+const RideCard = ({ ride }: { ride: Ride }) => {
+  return (
+    <View className="flex flex-row items-center justify-center bg-white rounded-lg shadow-sm shadow-neutral-300 mb-3">
+      <View className="flex flex-col items-start justify-center p-3">
+        <View className="flex flex-row items-center justify-between">
+          <Image
+            source={{
+              uri: `https://maps.geoapify.com/v1/staticmap?style=osm-bright&width=600&height=400&center=lonlat:${ride.destination_longitude},${ride.destination_latitude}&zoom=14&apiKey=${process.env.EXPO_PUBLIC_GEOAPIFY_API_KEY}`,
+            }}
+            className="w-[80px] h-[90px] rounded-lg"
+          />
 
-    const paymentColor = payment_status.toLowerCase() === 'paid' ? 'green' : 'red'; // green for paid, red for unpaid
-
-    return (
-        <View style={styles.cardContainer}>
-            <View style={styles.innerContainer}>
-                <View style={styles.contentContainer}>
-                    <Image
-                        source={{
-                            uri: `https://maps.geoapify.com/v1/staticmap?style=osm-bright&width=300&height=200&center=lonlat:${destination_longitude},${destination_latitude}&zoom=14&apiKey=${process.env.EXPO_PUBLIC_GEOAPIFY_API_KEY}`
-                        }}
-                        style={styles.mapImage}
-                    />
-                    <View style={styles.textContainer}>
-                        <View style={styles.row}>
-                            <Image source={icons.to} style={styles.icon} />
-                            <Text style={styles.text} numberOfLines={1}>{origin_address}</Text>
-                        </View>
-                        <View style={styles.row}>
-                            <Image source={icons.point} style={styles.icon} />
-                            <Text style={styles.text}>{destination_address}</Text>
-                        </View>
-                    </View>
-                </View>
-
-                <View style={styles.detailsContainer}>
-                    <View style={styles.dateTimeRow}>
-                        <Text style={styles.dateTimeLabel}>Date & Time</Text>
-                        <Text style={styles.dateTimeValue}>
-                            {formattedDate} - {formattedTime} (Ride Time: {ride_time} minutes)
-                        </Text>
-                    </View>
-                    <View style={styles.driverContainer}>
-                        <Text style={styles.driverLabel}>Driver</Text>
-                        <Text style={styles.driverValue}>
-                            {driver.first_name} {driver.last_name}
-                        </Text>
-                    </View>
-                    <View style={styles.seatsContainer}>
-                        <Text style={styles.seatsLabel}>Car Seats</Text>
-                        <Text style={styles.seatsValue}>
-                            {driver.car_seats}
-                        </Text>
-                    </View>
-                    <View style={styles.paymentContainer}>
-                        <Text style={styles.paymentLabel}>Payment Status</Text>
-                        <Text style={[styles.paymentValue, { color: paymentColor }]}>
-                            {payment_status}
-                        </Text>
-                    </View>
-                </View>
+          <View className="flex flex-col mx-5 gap-y-5 flex-1">
+            <View className="flex flex-row items-center gap-x-2">
+              <Image source={icons.to} className="w-5 h-5" />
+              <Text className="text-md font-JakartaMedium" numberOfLines={1}>
+                {ride.origin_address}
+              </Text>
             </View>
-        </View>
-    );
-};
 
-const styles = StyleSheet.create({
-    cardContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#FFFFFF',
-        borderRadius: 8,
-        shadowColor: '#A3A3A3',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        marginBottom: 12,
-    },
-    innerContainer: {
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        padding: 8,
-    },
-    contentContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
-    },
-    mapImage: {
-        width: 150,
-        height: 100,
-        borderRadius: 8,
-    },
-    textContainer: {
-        flex: 1,
-        marginLeft: 10,
-    },
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 5,
-    },
-    icon: {
-        width: 20,
-        height: 20,
-        marginRight: 5,
-    },
-    text: {
-        fontSize: 14,
-        fontFamily: 'Jakarta-Medium',
-    },
-    detailsContainer: {
-        width: '100%',
-        backgroundColor: '#F9FAFB',
-        borderRadius: 8,
-        padding: 10,
-        marginTop: 10,
-    },
-    dateTimeRow: {
-        flexDirection: 'column',
-        marginBottom: 10,
-    },
-    dateTimeLabel: {
-        fontSize: 14,
-        fontFamily: 'Jakarta-Medium',
-        color: '#4A5568',
-        fontWeight: 'bold',
-    },
-    dateTimeValue: {
-        fontSize: 14,
-        fontFamily: 'Jakarta-Medium',
-        color: '#4A5568',
-    },
-    driverContainer: {
-        marginBottom: 10,
-    },
-    driverLabel: {
-        fontSize: 14,
-        fontFamily: 'Jakarta-Medium',
-        color: '#2D3748',
-        fontWeight: 'bold',
-    },
-    driverValue: {
-        fontSize: 14,
-        fontFamily: 'Jakarta-Medium',
-        color: '#2D3748',
-    },
-    seatsContainer: {
-        marginBottom: 10,
-    },
-    seatsLabel: {
-        fontSize: 14,
-        fontFamily: 'Jakarta-Medium',
-        color: '#2D3748',
-        fontWeight: 'bold',
-    },
-    seatsValue: {
-        fontSize: 14,
-        fontFamily: 'Jakarta-Medium',
-        color: '#2D3748',
-    },
-    paymentContainer: {
-        marginBottom: 10,
-    },
-    paymentLabel: {
-        fontSize: 14,
-        fontFamily: 'Jakarta-Medium',
-        color: '#2D3748',
-        fontWeight: 'bold',
-    },
-    paymentValue: {
-        fontSize: 14,
-        fontFamily: 'Jakarta-Medium',
-    },
-});
+            <View className="flex flex-row items-center gap-x-2">
+              <Image source={icons.point} className="w-5 h-5" />
+              <Text className="text-md font-JakartaMedium" numberOfLines={1}>
+                {ride.destination_address}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        <View className="flex flex-col w-full mt-5 bg-general-500 rounded-lg p-3 items-start justify-center">
+          <View className="flex flex-row items-center w-full justify-between mb-5">
+            <Text className="text-md font-JakartaMedium text-gray-500">
+              Date & Time
+            </Text>
+            <Text className="text-md font-JakartaBold" numberOfLines={1}>
+              {formatDate(ride.created_at)}, {formatTime(ride.ride_time)}
+            </Text>
+          </View>
+
+          <View className="flex flex-row items-center w-full justify-between mb-5">
+            <Text className="text-md font-JakartaMedium text-gray-500">
+              Driver
+            </Text>
+            <Text className="text-md font-JakartaBold">
+              {ride.driver.first_name} {ride.driver.last_name}
+            </Text>
+          </View>
+
+          <View className="flex flex-row items-center w-full justify-between mb-5">
+            <Text className="text-md font-JakartaMedium text-gray-500">
+              Car Seats
+            </Text>
+            <Text className="text-md font-JakartaBold">
+              {ride.driver.car_seats}
+            </Text>
+          </View>
+
+          <View className="flex flex-row items-center w-full justify-between">
+            <Text className="text-md font-JakartaMedium text-gray-500">
+              Payment Status
+            </Text>
+            <Text
+              className={`text-md capitalize font-JakartaBold ${ride.payment_status === "paid" ? "text-green-500" : "text-red-500"}`}
+            >
+              {ride.payment_status}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+};
 
 export default RideCard;
