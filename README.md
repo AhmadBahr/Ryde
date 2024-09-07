@@ -102,7 +102,7 @@ Make sure you have the following installed on your machine:
 **Cloning the Repository**
 
 ```bash
-git clone https://github.com/JavaScript-Mastery-Pro/uber.git
+git clone https://github.com/your-name/Ryde.git
 cd uber
 ```
 
@@ -1709,10 +1709,8 @@ You can find important links below:
 - <a href="https://www.nativewind.dev/v4/getting-started/typescript" target="_blank">TypeScript Support for
   NativeWind</a>
 - <a href="https://docs.expo.dev/guides/using-eslint/" target="_blank">Eslint and Prettier Setup</a>
-- <a href="https://jb.gg/JSMastery" target="_blank">Download FREE WebStorm</a>
 - <a href="https://neon.tech/" target="_blank">Serverless NeonDB</a>
 - <a href="https://go.clerk.com/DtiSBEI" target="_blank">Clerk Auth</a>
-- <a href="https://courses.jsmastery.pro/course/databases" target="_blank">Database Mastery Course</a>
 - <a href="https://clerk.com/docs/quickstarts/expo" target="_blank">Clerk Expo Quickstart</a>
 - <a href="https://clerk.com/docs/custom-flows/oauth-connections" target="_blank">Clerk Expo OAuth</a>
 - <a href="https://www.geoapify.com/" target="_blank">Geoapify Map</a>
