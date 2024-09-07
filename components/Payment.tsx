@@ -3,8 +3,8 @@ import CustomButton from '@/components/CustomButton';
 import { fetchAPI } from '@/lib/fetch';
 import { PaymentProps } from '@/types/type';
 import { PaymentSheetError, useStripe } from '@stripe/stripe-react-native';
-import { Alert } from 'react-native';
-import { Text } from 'react-native';
+import { Alert, Text } from 'react-native';
+import { useLocationStore } from '@/store';
 
 const Payment = ({
     fullName,
@@ -15,8 +15,16 @@ const Payment = ({
 }: PaymentProps) => {
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
     const [success, setSuccess] = useState(false);
+    const {
+        userAddress,
+        userLongitude,
+        userLatitude,
+        destinationLatitude,
+        destinationAddress,
+        destinationLongitude,
+    } = useLocationStore(); 
 
-    const confirmHandler = async (paymentMethod, intentCreationCallback) => {
+    const confirmHandler = async (paymentMethod: { id: any; }, intentCreationCallback: (arg0: { clientSecret?: any; error?: any; }) => void) => {
         try {
             const response = await fetchAPI('/api/stripe/create', {
                 method: 'POST',
@@ -25,11 +33,21 @@ const Payment = ({
                 },
                 body: JSON.stringify({
                     paymentMethodId: paymentMethod.id,
-                    name: fullName || email.split('@')[0], 
+                    name: fullName || email.split('@')[0],
                     email,
                     amount,
                     driverId,
                     rideTime,
+                    pickupLocation: {
+                        address: userAddress,
+                        latitude: userLatitude,
+                        longitude: userLongitude,
+                    },
+                    dropoffLocation: {
+                        address: destinationAddress,
+                        latitude: destinationLatitude,
+                        longitude: destinationLongitude,
+                    },
                 }),
             });
 
@@ -59,7 +77,7 @@ const Payment = ({
             }
         } catch (error) {
             console.error('Error in confirmHandler:', error);
-            intentCreationCallback({ error: error.message });
+            intentCreationCallback && intentCreationCallback({ error: error.message });
         }
     };
 
@@ -68,8 +86,8 @@ const Payment = ({
             merchantDisplayName: "Ride", 
             intentConfiguration: {
                 mode: {
-                    amount: amount * 100, 
-                    currencyCode: "USD",
+                    amount: amount * 100,
+                    currencyCode: "USD", 
                 },
                 confirmHandler: confirmHandler, 
             },
