@@ -1708,8 +1708,3 @@ You can find important links below:
 - <a href="https://docs.stripe.com/payments/accept-a-payment?platform=react-native&ui=payment-sheet" target="_blank">
   Stripe React Native SDK</a>
 - <a href="https://docs.stripe.com/payments/accept-a-payment-deferred" target="_blank">Stripe</a>
-
-<br />
-<br />
-
-#
