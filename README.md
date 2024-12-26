@@ -40,7 +40,7 @@ skills in a unique manner that creates a lasting impact.
 - Stripe
 - PostgreSQL
 - Google Maps
-- zustand
+- Zustand
 - Clerk
 - Tailwind CSS
 
